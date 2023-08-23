@@ -8,11 +8,10 @@ LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars
 int mean;
 int plot_array[20];
 byte mode = 0;
-unsigned long num = 0;
-unsigned long lastturn;
+unsigned long num,numC,StartTime, lastturn;
 const float len = 2.125;
-float dist, vel, MaxSpeed, MaxAcceleration;
-
+float vel, MaxSpeed, MaxAcceleration;
+bool SpeedFormat = true;
 GTimer_ms myTimer(1000);               // создать миллисекундный таймер
 
 void(* resetFunc) (void) = 0; 
@@ -38,6 +37,8 @@ void setup()
 }
 
 void check(){
+  float dist = num*len;
+  
   if(mode == 0){
     long AllWay = dist;
     String distance = "";
@@ -48,16 +49,35 @@ void check(){
     lcd.print(distance + " m");
     
     lcd.setCursor(0,1);
-    lcd.print(FToStr(vel) + " m/s  " + FToStr(vel*3.6) + " km/h    ");  
+    if(SpeedFormat) lcd.print(FToStr(vel) + " m/s     ");
+    else lcd.print(FToStr(vel*3.6) + " km/h    ");  
   }
   else if(mode == 1){
+    lcd.setCursor(0,0);
+    if(SpeedFormat) lcd.print("Max: " + FToStr(MaxSpeed) + " m/s     ");
+    else lcd.print("Max: " + FToStr(MaxSpeed*3.6) + " km/h     ");
+
+    byte customChar[] = { 0x1C, 0x04, 0x08, 0x1C, 0x00, 0x00, 0x00, 0x00 };
+    lcd.createChar(0, customChar);
+      
     lcd.setCursor(0,1);
-    lcd.print(FToStr(MaxSpeed) + " m/s  " + FToStr(MaxSpeed*3.6) + " km/h    ");  
-    
-    lcd.setCursor(1,1);
-    lcd.print(FToStr(MaxAcceleration) + " m/s  " + FToStr(MaxAcceleration*3.6) + " km/h    ");  
+    lcd.print(FToStr(MaxAcceleration) + " m/s");
+    lcd.write(0);
+    lcd.print("   "); 
+     
   }
   else if(mode == 2){
+    lcd.setCursor(0,0);
+    float Aver = dist / (millis() - StartTime)*1000;
+    if(SpeedFormat) lcd.print("Aver: " + FToStr(Aver) + " m/s     ");
+    else lcd.print("Aver: " + FToStr(Aver*3.6) + " km/h     ");
+    
+    lcd.setCursor(0,1);
+    float AverC = numC*len / (millis() - StartTime)*1000;
+    if(SpeedFormat) lcd.print("AverC: " + FToStr(AverC) + " m/s     ");
+    else lcd.print("AverC: " + FToStr(AverC*3.6) + " km/h     ");
+  }
+  else if(mode == 3){
     int disti = vel*10;
     int mxspeed = MaxSpeed * 10;
     drawPlot(0, 1, 16, 2, 0, mxspeed, disti);
@@ -68,23 +88,27 @@ void check(){
 void loop()
 {
   enc.tick();
-  if (enc.click()) mode = (mode + 1) % 3;
+  if (enc.click()) {
+    lcd.clear();
+    mode = (mode + 1) % 4;
+  }
+  if(enc.clicks == 2) mode = 0;
   if(enc.clicks == 6) resetFunc();
+  if (enc.held()) SpeedFormat = !SpeedFormat;
 
   int val = abs(mean-analogRead(A0));
 
   if(val > 2){
     int delta = millis() - lastturn;
     if(delta > 70){
-      dist+=len;
       float PrevVel = vel;
       vel = len / (delta) * 1000;
-      
+
       MaxSpeed = max(MaxSpeed, vel);
       MaxAcceleration = max(MaxSpeed, (vel - PrevVel) / delta);
-      num=num+1;
-      
-      check();
+      num++;
+
+      if(delta < 2000)numC++;
     }
     
     lastturn = millis();
@@ -147,8 +171,8 @@ void initPlot() {
 String FToStr(float num){
   char bufferi[10];
   
-  if(num < 10) dtostrf(vel, 3, 1, bufferi);
-  else dtostrf(vel, 4, 1, bufferi);
+  if(num < 10) dtostrf(num, 3, 1, bufferi);
+  else dtostrf(num, 4, 1, bufferi);
 
   return String(bufferi);
 }
