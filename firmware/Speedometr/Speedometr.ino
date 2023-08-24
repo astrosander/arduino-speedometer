@@ -49,13 +49,11 @@ void check(){
     lcd.print(distance + " m");
     
     lcd.setCursor(0,1);
-    if(SpeedFormat) lcd.print(FToStr(vel) + " m/s     ");
-    else lcd.print(FToStr(vel*3.6) + " km/h    ");  
+    lcd.print(CheckSpeed(vel));  
   }
   else if(mode == 1){
     lcd.setCursor(0,0);
-    if(SpeedFormat) lcd.print("Max: " + FToStr(MaxSpeed) + " m/s     ");
-    else lcd.print("Max: " + FToStr(MaxSpeed*3.6) + " km/h     ");
+    lcd.print("Max: " + CheckSpeed(MaxSpeed));
 
     byte customChar[] = { 0x1C, 0x04, 0x08, 0x1C, 0x00, 0x00, 0x00, 0x00 };
     lcd.createChar(0, customChar);
@@ -69,13 +67,11 @@ void check(){
   else if(mode == 2){
     lcd.setCursor(0,0);
     float Aver = dist / (millis() - StartTime)*1000;
-    if(SpeedFormat) lcd.print("Aver: " + FToStr(Aver) + " m/s     ");
-    else lcd.print("Aver: " + FToStr(Aver*3.6) + " km/h     ");
-    
+    lcd.print("Aver: " + CheckSpeed(Aver));
+        
     lcd.setCursor(0,1);
     float AverC = numC*len / (millis() - StartTime)*1000;
-    if(SpeedFormat) lcd.print("AverC: " + FToStr(AverC) + " m/s     ");
-    else lcd.print("AverC: " + FToStr(AverC*3.6) + " km/h     ");
+    lcd.print("AverC: " + CheckSpeed(AverC));
   }
   else if(mode == 3){
     int disti = vel*10;
@@ -105,7 +101,7 @@ void loop()
       vel = len / (delta) * 1000;
 
       MaxSpeed = max(MaxSpeed, vel);
-      MaxAcceleration = max(MaxSpeed, (vel - PrevVel) / delta);
+      MaxAcceleration = max(MaxAcceleration, (vel - PrevVel) / delta);
       num++;
 
       if(delta < 2000)numC++;
@@ -178,3 +174,8 @@ String FToStr(float num){
 }
 
 int floatToInt(float val){return val;}
+
+String CheckSpeed(float str){
+  if(SpeedFormat) return FToStr(str) + " m/s     ";
+  else FToStr(str*3.6) + " km/h     ";
+}
