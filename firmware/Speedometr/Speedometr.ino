@@ -1,18 +1,31 @@
 #include <LiquidCrystal_I2C.h>
 #include <EncButton.h>
 #include <GyverTimer.h>
+#include <EEPROM.h>
 
 EncButton<EB_TICK, 13> enc; 
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
+GTimer_ms myTimer(1000);
+GTimer_ms BackUp(10000);
+
 int mean;
 int plot_array[20];
 byte mode = 0;
-unsigned long num,numC,StartTime, lastturn;
+unsigned long num, numC, TimeDur, lastturn;
 const float len = 2.125;
 float vel, MaxSpeed, MaxAcceleration;
 bool SpeedFormat = true;
-GTimer_ms myTimer(1000);               // создать миллисекундный таймер
+
+struct Data {
+  unsigned long num = 0;
+  unsigned long numC = 0;
+  unsigned long TimeDur = 0;
+  float MaxSpeed = 0;
+  float MaxAcceleration = 0;
+  bool SpeedFormat = 0;
+};
+Data data;
 
 void(* resetFunc) (void) = 0; 
 
@@ -25,13 +38,17 @@ void setup()
   lcd.backlight();
   initPlot();
   
-  lcd.setCursor(0,0);
-  lcd.print("Calibration...");
-  
-  for(byte i = 1; i < 11; i++) mean += analogRead(A0);
-  mean /= 10;
-  
-  lcd.clear();
+  mean = analogRead(A0);
+
+  EEPROM.get(0, data);
+  if(data.num < 4294967290){//for first time
+    num =  data.num;
+    numC = data.numC;
+    TimeDur = data.TimeDur;
+    MaxSpeed = data.MaxSpeed;
+    MaxAcceleration = data.MaxAcceleration;
+    SpeedFormat = data.SpeedFormat;
+  }
   
   check(); 
 }
@@ -49,7 +66,9 @@ void check(){
     lcd.print(distance + " m");
     
     lcd.setCursor(0,1);
-    lcd.print(CheckSpeed(vel));  
+    lcd.print(CheckSpeed(vel));
+
+   Serial.println(CheckSpeed(vel));
   }
   else if(mode == 1){
     lcd.setCursor(0,0);
@@ -66,14 +85,21 @@ void check(){
   }
   else if(mode == 2){
     lcd.setCursor(0,0);
-    float Aver = dist / (millis() - StartTime)*1000;
+    float Aver = dist / (millis() + TimeDur)*1000;
     lcd.print("Aver: " + CheckSpeed(Aver));
         
     lcd.setCursor(0,1);
-    float AverC = numC*len / (millis() - StartTime)*1000;
+    float AverC = numC*len / (millis() + TimeDur)*1000;
     lcd.print("AverC: " + CheckSpeed(AverC));
   }
   else if(mode == 3){
+    lcd.setCursor(0,0);
+    lcd.print(TimeFormat(millis()));
+
+    lcd.setCursor(0,1);
+    lcd.print(TimeFormat(millis() + TimeDur));
+  }  
+  else if(mode == 4){
     int disti = vel*10;
     int mxspeed = MaxSpeed * 10;
     drawPlot(0, 1, 16, 2, 0, mxspeed, disti);
@@ -86,10 +112,10 @@ void loop()
   enc.tick();
   if (enc.click()) {
     lcd.clear();
-    mode = (mode + 1) % 4;
+    mode = (mode + 1) % 5;
   }
   if(enc.clicks == 2) mode = 0;
-  if(enc.clicks == 6) resetFunc();
+  if(enc.clicks == 6) {BackReset();resetFunc();}
   if (enc.held()) SpeedFormat = !SpeedFormat;
 
   int val = abs(mean-analogRead(A0));
@@ -101,7 +127,7 @@ void loop()
       vel = len / (delta) * 1000;
 
       MaxSpeed = max(MaxSpeed, vel);
-      MaxAcceleration = max(MaxAcceleration, (vel - PrevVel) / delta);
+      MaxAcceleration = max(MaxAcceleration, (vel - PrevVel) / delta * 1000);
       num++;
 
       if(delta < 2000)numC++;
@@ -111,8 +137,23 @@ void loop()
   }
   
   if (myTimer.isReady()) check();
+  if (BackUp.isReady()) BackUP();
 }
 
+void BackUP(){
+  data.num = num;
+  data.numC = numC;
+  data.TimeDur = TimeDur + millis();
+  data.MaxSpeed = MaxSpeed;
+  data.MaxAcceleration = MaxAcceleration;
+  data.SpeedFormat = SpeedFormat;
+  EEPROM.put(0, data);
+}
+
+void BackReset(){
+  data.num = 4294967292;
+  EEPROM.put(0, data);
+}
 
 void drawPlot(byte pos, byte row, byte width, byte height, int min_val, int max_val, int fill_val) {
   initPlot();
@@ -164,6 +205,7 @@ void initPlot() {
   lcd.createChar(6, row6);
   lcd.createChar(7, row7);
 }
+
 String FToStr(float num){
   char bufferi[10];
   
@@ -177,5 +219,22 @@ int floatToInt(float val){return val;}
 
 String CheckSpeed(float str){
   if(SpeedFormat) return FToStr(str) + " m/s     ";
-  else FToStr(str*3.6) + " km/h     ";
+  else return FToStr(str*3.6) + " km/h     ";
+}
+
+String TimeFormat(unsigned long Time){
+    int seconds = (Time / 1000) % 60;
+    int minutes = (Time / 60000) % 60;
+    int hours = Time / 3600000;
+
+    String ans = "";
+    
+    if (hours < 10) ans += "0";
+    ans += String(hours) + ":";
+    if (minutes < 10) ans += "0";
+    ans += String(minutes) + ":";
+    if (seconds < 10) ans += "0";
+    ans+=String(seconds);
+
+    return ans;
 }
