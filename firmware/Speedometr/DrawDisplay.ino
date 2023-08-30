@@ -18,15 +18,10 @@ void DrawDisplay(){
   else if(mode == 1){
     lcd.setCursor(0,0);
     lcd.print("Max: " + CheckSpeed(MaxSpeed));
-
-    byte customChar[] = { 0x1C, 0x04, 0x08, 0x1C, 0x00, 0x00, 0x00, 0x00 };
-    lcd.createChar(0, customChar);
       
     lcd.setCursor(0,1);
-    lcd.print(FToStr(MaxAcceleration) + " m/s");
-    lcd.write(0);
+    lcd.print(FToStr(MaxAcceleration) + " m/s^2");
     lcd.print("   "); 
-     
   }
   else if(mode == 2){
     lcd.setCursor(0,0);
@@ -44,9 +39,8 @@ void DrawDisplay(){
     lcd.setCursor(0,1);
     lcd.print(TimeFormat(millis() + TimeDur));
   }  
-  else if(mode == 4){
-    int disti = vel*10;
-    int mxspeed = MaxSpeed * 10;
-    drawPlot(0, 1, 16, 2, 0, mxspeed, disti);
-  }
+  else if(mode == 4) drawPlot1(0, 1, 16, 2, (int*)Secondly);
+  else if(mode == 5) drawPlot1(0, 1, 16, 2, (int*)FiveMin);
+  else if(mode == 6) drawPlot1(0, 1, 16, 2, (int*)FifteenMin);
+  else if(mode == 7) drawPlot1(0, 1, 16, 2, (int*)Hour);
 }
