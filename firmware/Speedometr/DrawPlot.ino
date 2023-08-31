@@ -7,14 +7,14 @@ void plotTick(){
     for (byte i = 0; i < 15; i++) FiveMin[i] = FiveMin[i + 1];
      FiveMin[15] = vel*100;
   }
-  if(FifteenMinPlot.isReady()){
-    for (byte i = 0; i < 15; i++) FifteenMin[i] = FifteenMin[i + 1];
-     FifteenMin[15] = vel*100;
-  } 
-  if(HourPlot.isReady()){
-    for (byte i = 0; i < 15; i++) Hour[i] = Hour[i + 1];
-     Hour[15] = vel*100;
-  }   
+//  if(FifteenMinPlot.isReady()){
+//    for (byte i = 0; i < 15; i++) FifteenMin[i] = FifteenMin[i + 1];
+//     FifteenMin[15] = vel*100;
+//  } 
+//  if(HourPlot.isReady()){
+//    for (byte i = 0; i < 15; i++) Hour[i] = Hour[i + 1];
+//     Hour[15] = vel*100;
+//  }   
 }
 
 

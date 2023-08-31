@@ -1,6 +1,7 @@
 void DrawDisplay(){  
   float dist = num*len;
-  
+//  for (byte i = 0; i < 15; i++) Secondly[i] = Secondly[i + 1];
+//  Secondly[15] = vel*100;
   if(mode == 0){
     long AllWay = dist;
     String distance = "";
@@ -41,6 +42,6 @@ void DrawDisplay(){
   }  
   else if(mode == 4) drawPlot1(0, 1, 16, 2, (int*)Secondly);
   else if(mode == 5) drawPlot1(0, 1, 16, 2, (int*)FiveMin);
-  else if(mode == 6) drawPlot1(0, 1, 16, 2, (int*)FifteenMin);
-  else if(mode == 7) drawPlot1(0, 1, 16, 2, (int*)Hour);
+//  else if(mode == 6) drawPlot1(0, 1, 16, 2, (int*)FifteenMin);
+//  else if(mode == 7) drawPlot1(0, 1, 16, 2, (int*)Hour);
 }
