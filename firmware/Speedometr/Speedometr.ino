@@ -59,6 +59,7 @@ void loop()
   int val = abs(mean-analogRead(A0));
 
   if(val > 2){
+    lcd.setBacklight(HIGH);
     int delta = millis() - lastturn;
     lastturn = millis();
     if(f) return;
@@ -82,7 +83,7 @@ void loop()
   }
   else 
   {
-  if(millis() - lastturn > 4000) vel = 0;
+  if(millis() - lastturn > 4000) {vel = 0;lcd.setBacklight(LOW);}
   f=0;  
   }
   
