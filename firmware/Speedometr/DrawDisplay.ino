@@ -16,7 +16,7 @@ void DrawDisplay(){
 
    Serial.println(CheckSpeed(vel));
   }
-  else if(mode == 1){
+  else if(mode == 2){
     lcd.setCursor(0,0);
     lcd.print("Max: " + CheckSpeed(MaxSpeed));
       
@@ -24,7 +24,7 @@ void DrawDisplay(){
     lcd.print(FToStr(MaxAcceleration) + " m/s^2");
     lcd.print("   "); 
   }
-  else if(mode == 2){
+  else if(mode == 3){
     lcd.setCursor(0,0);
     float Aver = dist / (millis() + TimeDur)*1000;
     lcd.print("Aver: " + CheckSpeed(Aver));
@@ -33,14 +33,14 @@ void DrawDisplay(){
     float AverC = numC*len / (millis() + TimeDur)*1000;
     lcd.print("AverC: " + CheckSpeed(AverC));
   }
-  else if(mode == 3){
+  else if(mode == 4){
     lcd.setCursor(0,0);
     lcd.print(TimeFormat(millis()));
 
     lcd.setCursor(0,1);
     lcd.print(TimeFormat(millis() + TimeDur));
   }  
-  else if(mode == 4) drawPlot1(0, 1, 16, 2, (int*)Secondly);
+  else if(mode == 1) drawPlot1(0, 1, 16, 2, (int*)Secondly);
   else if(mode == 5) drawPlot1(0, 1, 16, 2, (int*)FiveMin);
 //  else if(mode == 6) drawPlot1(0, 1, 16, 2, (int*)FifteenMin);
 //  else if(mode == 7) drawPlot1(0, 1, 16, 2, (int*)Hour);
