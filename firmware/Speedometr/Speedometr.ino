@@ -19,7 +19,7 @@ byte mode = 0;
 unsigned long num, numC, TimeDur, lastturn;
 const float len = 2.125;
 float vel, MaxSpeed, MaxAcceleration;
-bool SpeedFormat = true;
+bool SpeedFormat = false;
 
 struct Data {
   unsigned long num = 0;
@@ -58,7 +58,8 @@ void loop()
 
   int val = abs(mean-analogRead(A0));
 
-  if(val > 2){
+  if(val > 4){
+    Serial.println(val);
     lcd.setBacklight(HIGH);
     int delta = millis() - lastturn;
     lastturn = millis();
@@ -68,7 +69,9 @@ void loop()
 
     float PrevVel = vel;
     vel = len / (delta) * 1000;
-//
+
+    if(PrevVel < 0.3 && vel > 4) {vel = 0; return;}
+    
     Serial.print(vel);
     Serial.print("  ");
     Serial.println(delta);
@@ -83,7 +86,11 @@ void loop()
   }
   else 
   {
-  if(millis() - lastturn > 4000) {vel = 0;lcd.setBacklight(LOW);}
+  if(millis() - lastturn > 4000) {
+    if(millis() - lastturn > 15000) lcd.setBacklight(LOW);
+    else lcd.setBacklight(HIGH);
+    vel = 0;
+  }
   f=0;  
   }
   
@@ -91,6 +98,8 @@ void loop()
   if(enc.clicks == 5) MaxSpeed=0;
   if(enc.clicks == 10) {BackReset();resetFunc();}
   if (enc.click()) {
+    lastturn = millis();
+    lcd.setBacklight(HIGH);
     lcd.clear();
     mode = (mode + 1) % NumMode;
 //    if(mode == 4){lcd.setCursor(0,0); lcd.print("secondly Plot"); delay(500);}
