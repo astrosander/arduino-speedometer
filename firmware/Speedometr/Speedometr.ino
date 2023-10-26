@@ -58,40 +58,37 @@ void loop()
 
   int val = abs(mean-analogRead(A0));
 
+  int delta = millis() - lastturn;
+  
   if(val > 4){
-    Serial.println(val);
     lcd.setBacklight(HIGH);
-    int delta = millis() - lastturn;
     lastturn = millis();
+    
     if(f) return;
-    f = 1;
     if(delta < 70) return;
 
     float PrevVel = vel;
+    float Acceleration = (vel - PrevVel) / delta * 1000;
     vel = len / (delta) * 1000;
+    f = 1;
 
-    if(PrevVel < 0.3 && vel > 4) {vel = 0; return;}
-    
-    Serial.print(vel);
-    Serial.print("  ");
-    Serial.println(delta);
+    if((PrevVel < 0.3 && vel > 4) || Acceleration > 80) {vel = 0; return;}
     
     MaxSpeed = max(MaxSpeed, vel);
-    MaxAcceleration = max(MaxAcceleration, (vel - PrevVel) / delta * 1000);
+    MaxAcceleration = max(MaxAcceleration, Acceleration);
     num++;
 
     if(delta < 2000)numC++;
-    
-    
   }
   else 
   {
-  if(millis() - lastturn > 4000) {
-    if(millis() - lastturn > 15000) lcd.setBacklight(LOW);
-    else lcd.setBacklight(HIGH);
-    vel = 0;
-  }
-  f=0;  
+    if(delta > 4000) {
+      if(delta > 30000) lcd.setBacklight(LOW);
+      else lcd.setBacklight(HIGH);
+      
+      vel = 0;
+    }
+    f=0;  
   }
   
   if(enc.clicks == 2) mode = 0;
@@ -100,20 +97,15 @@ void loop()
   if (enc.click()) {
     lastturn = millis();
     lcd.setBacklight(HIGH);
+    if(delta > 30000) return;
     lcd.clear();
     mode = (mode + 1) % NumMode;
-//    if(mode == 4){lcd.setCursor(0,0); lcd.print("secondly Plot"); delay(500);}
-//    else if(mode == 5){lcd.setCursor(0,0); lcd.print("1 minute Plot"); delay(500);}
-//    else if(mode == 6){lcd.setCursor(0,0); lcd.print("5 minute Plot"); delay(500);}
-//    else if(mode == 7){lcd.setCursor(0,0); lcd.print("15 minute Plot"); delay(500);}
-//    lcd.clear();
-//    
   }
 
   if (enc.held()) SpeedFormat = !SpeedFormat;
 
   if (myTimer.isReady()) DrawDisplay();
-  if (BackUp.isReady()) BackUP();
+  if (BackUp.isReady() && delta < 4000) BackUP();
   
   plotTick();
 }

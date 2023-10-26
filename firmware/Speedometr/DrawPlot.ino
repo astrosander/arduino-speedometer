@@ -27,22 +27,18 @@ void drawPlot1(byte pos, byte row, byte width, byte height, int *plot_array) {
 //  Serial.println("\n");
   
   int max_val = -32000;
-  int min_val = 32000;
+  int min_val = 0;
   for (byte i = 0; i < width; i++) {
-    min_val = min(min_val, plot_array[i]);
+//    min_val = min(min_val, plot_array[i]);
     max_val = max(max_val, plot_array[i]);
 //    if (plot_array[i] > max_value) max_value = plot_array[i];
 //    if (plot_array[i] && plot_array[i] < min_value) min_value = plot_array[i];
   }
 
   
-  min_val = min_val*0.95;
+//  min_val = min_val*0.95*0;
   max_val = max_val*1.05;
 
-//  Serial.print("min_val=" + String(min_val));
-//  Serial.print("   ");
-//  Serial.print("max_val=" + String(max_val));
-//  Serial.println("\n");
   
   for (byte i = 0; i < width; i++) { // each column of parameters
     int fill_val = plot_array[i];
