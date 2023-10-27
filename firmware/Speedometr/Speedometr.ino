@@ -1,9 +1,21 @@
+/* Velocomputer based on Arduino and Hall Sensor
+ * Сomponents: Analog Hall Sensor & Magnet, Arduino UNO/Nano, button, LCD display I2C 16x02
+ * Home page: https://github.com/astrosander/arduino-speedometer
+ * Made with 💖 by astrosander
+ */
+ 
+#define NumMode 6 //number of modes
+#define ButPin 13 //pin of the Button
+#define CalibrationDelta 5 //independs on the location of magnet relatively to Hall Sensor 
+const float len = 2.125; //length of the wheel
+
+
 #include <LiquidCrystal_I2C.h>
 #include <EncButton.h>
 #include <GyverTimer.h>
 #include <EEPROM.h>
 
-EncButton<EB_TICK, 13> enc; 
+EncButton<EB_TICK, ButPin> enc; 
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 GTimer_ms myTimer(1000);
@@ -13,13 +25,11 @@ GTimer_ms FiveMinPlot((long)1*3750);
 //GTimer_ms FifteenMinPlot((long)5*3750);
 //GTimer_ms HourPlot((long)15*3750);
 
-int Secondly[16], FiveMin[16], FifteenMin[16], Hour[16];
-int mean;
+bool SpeedFormat, f;
 byte mode = 0;
-unsigned long num, numC, TimeDur, lastturn;
-const float len = 2.125;
+int Secondly[16], FiveMin[16], FifteenMin[16], Hour[16], mean;
+unsigned long num, numC, TimeDur, lastturn, delta=0;
 float vel, MaxSpeed, MaxAcceleration;
-bool SpeedFormat = false;
 
 struct Data {
   unsigned long num = 0;
@@ -29,7 +39,9 @@ struct Data {
   float MaxAcceleration = 0;
   bool SpeedFormat = 0;
 };
+
 Data data;
+
 
 void(* resetFunc) (void) = 0; 
 
@@ -37,6 +49,7 @@ void setup()
 {
   Serial.begin(9600);
   pinMode(A0, INPUT);
+  enc.setStepTimeout(500);
   
   lcd.init();                
   lcd.backlight();
@@ -47,65 +60,16 @@ void setup()
   
   DrawDisplay(); 
 }
-const byte NumMode = 6;
-long lastDelta=0;
-bool f = 0;
 
 void loop()
 {
-  enc.tick();
-//  if(enc.clicks == 2) {mode = (mode + NumMode - 2) % NumMode;return;}
+  delta = millis() - lastturn;
 
-  int val = abs(mean-analogRead(A0));
+  ButtonTick();
+  SpeedometerTick();  
+  plotTick();
 
-  int delta = millis() - lastturn;
-  
-  if(val > 4){
-    lcd.setBacklight(HIGH);
-    lastturn = millis();
-    
-    if(f) return;
-    if(delta < 70) return;
-
-    float PrevVel = vel;
-    float Acceleration = (vel - PrevVel) / delta * 1000;
-    vel = len / (delta) * 1000;
-    f = 1;
-
-    if((PrevVel < 0.3 && vel > 4) || Acceleration > 80) {vel = 0; return;}
-    
-    MaxSpeed = max(MaxSpeed, vel);
-    MaxAcceleration = max(MaxAcceleration, Acceleration);
-    num++;
-
-    if(delta < 2000)numC++;
-  }
-  else 
-  {
-    if(delta > 4000) {
-      if(delta > 30000) lcd.setBacklight(LOW);
-      else lcd.setBacklight(HIGH);
-      
-      vel = 0;
-    }
-    f=0;  
-  }
-  
-  if(enc.clicks == 2) mode = 0;
-  if(enc.clicks == 5) MaxSpeed=0;
-  if(enc.clicks == 10) {BackReset();resetFunc();}
-  if (enc.click()) {
-    lastturn = millis();
-    lcd.setBacklight(HIGH);
-    if(delta > 30000) return;
-    lcd.clear();
-    mode = (mode + 1) % NumMode;
-  }
-
-  if (enc.held()) SpeedFormat = !SpeedFormat;
-
+  //cheecking of timers
   if (myTimer.isReady()) DrawDisplay();
   if (BackUp.isReady() && delta < 4000) BackUP();
-  
-  plotTick();
 }

@@ -1,3 +1,38 @@
+void SpeedometerTick(){
+  int val = abs(mean-analogRead(A0));
+  
+  if(val >= CalibrationDelta){
+    lcd.setBacklight(HIGH);
+    lastturn = millis();
+    
+    if(f) return;
+    if(delta < 70) return;
+
+    float PrevVel = vel;
+    float Acceleration = (vel - PrevVel) / delta * 1000;
+    vel = len / (delta) * 1000;
+    f = 1;
+
+    if((PrevVel < 0.3 && vel > 4) || Acceleration > 80) {vel = 0; return;}
+    
+    MaxSpeed = max(MaxSpeed, vel);
+    MaxAcceleration = max(MaxAcceleration, Acceleration);
+    num++;
+
+    if(delta < 2000)numC++;
+  }
+  else 
+  {
+    if(delta > 4000) {
+      if(delta > 30000) lcd.setBacklight(LOW);
+      else lcd.setBacklight(HIGH);
+      
+      vel = 0;
+    }
+    f=0;  
+  }
+}
+
 String FToStr(float num){
   char bufferi[10];
   
