@@ -5,11 +5,18 @@ void DrawDisplay(){
   if(mode == 0){
     long AllWay = dist;
     String distance = "";
-    if(AllWay < 1000) distance = String(AllWay);
-    else distance = String(AllWay / 1000) + "," + String(AllWay % 1000); 
+    String CurTime = TimeFormat(millis() + TimeDur, 0);
+    
+    if(AllWay < 1000) distance = String(AllWay) + " m";
+    else distance = String(AllWay / 1000) + "," + String(AllWay % 1000) + " m"; 
+
+    int dif = max(16 - CurTime.length() - distance.length(), 0);
+    
+    while(dif--) distance+=" "; 
+    distance += CurTime;
      
     lcd.setCursor(0,0);
-    lcd.print(distance + " m");
+    lcd.print(distance);
     
     lcd.setCursor(0,1);
     lcd.print(CheckSpeed(vel));
@@ -39,10 +46,10 @@ void DrawDisplay(){
   
   else if(mode == 4){
     lcd.setCursor(0,0);
-    lcd.print(TimeFormat(millis()));
+    lcd.print(TimeFormat(millis(), 1));
 
     lcd.setCursor(0,1);
-    lcd.print(TimeFormat(millis() + TimeDur));
+    lcd.print(TimeFormat(millis() + TimeDur, 1));
   }  
   else if(mode == 5) drawPlot(0, 1, 16, 2, (int*)OneMin);
   else if(mode == 6) drawPlot(0, 1, 16, 2, (int*)ThreeMin);
