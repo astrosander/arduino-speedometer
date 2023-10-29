@@ -11,8 +11,8 @@ void EEPROMInit(){
 }
 
 void BackUP(){
-//  for (byte i = 0; i < 15; i++) FiveMin[i] = FiveMin[i + 1];
-//  FiveMin[15] = vel*100;
+  RefreshPloat(ThreeMin);
+  
   data.num = num;
   data.numC = numC;
   data.TimeDur = TimeDur + millis();

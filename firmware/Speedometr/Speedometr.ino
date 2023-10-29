@@ -4,9 +4,11 @@
  * Made with 💖 by astrosander
  */
  
-#define NumMode 6 //number of modes
+#define NumMode 8 //number of modes
 #define ButPin 13 //pin of the Button
 #define CalibrationDelta 5 //independs on the location of magnet relatively to Hall Sensor 
+#define RestTime 4000 //the time after which the bicycle is considered to have stopped (in milliseconds)
+#define SleepTime 30000 //time after which the backlight switches off (in milliseconds)
 const float len = 2.125; //length of the wheel
 
 
@@ -19,15 +21,13 @@ EncButton<EB_TICK, ButPin> enc;
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 GTimer_ms myTimer(1000);
-GTimer_ms BackUp(10000);
-GTimer_ms SecondlyPlot(1000);
-GTimer_ms FiveMinPlot((long)1*3750);
-//GTimer_ms FifteenMinPlot((long)5*3750);
-//GTimer_ms HourPlot((long)15*3750);
+GTimer_ms BackUp((long)3*3750);
+GTimer_ms OneMinPlot((long)1*3750);
+GTimer_ms FifteenMinPlot((long)15*3750);
 
 bool SpeedFormat, f;
 byte mode = 0;
-int Secondly[16], FiveMin[16], FifteenMin[16], Hour[16], mean;
+int Secondly[16], OneMin[16], ThreeMin[16], FifteenMin[16], mean;
 unsigned long num, numC, TimeDur, lastturn, delta=0;
 float vel, MaxSpeed, MaxAcceleration;
 
@@ -41,9 +41,6 @@ struct Data {
 };
 
 Data data;
-
-
-void(* resetFunc) (void) = 0; 
 
 void setup()
 {
@@ -66,10 +63,15 @@ void loop()
   delta = millis() - lastturn;
 
   ButtonTick();
-  SpeedometerTick();  
+  SpeedometerTick();
   plotTick();
 
   //cheecking of timers
   if (myTimer.isReady()) DrawDisplay();
   if (BackUp.isReady() && delta < 4000) BackUP();
+}
+
+void RefreshPloat(int *plot_array){
+  for (byte i = 0; i < 15; i++) plot_array[i] = plot_array[i + 1];
+  plot_array[15] = vel*100;
 }

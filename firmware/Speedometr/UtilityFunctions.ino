@@ -19,12 +19,12 @@ void SpeedometerTick(){
     MaxAcceleration = max(MaxAcceleration, Acceleration);
     num++;
 
-    if(delta < 2000)numC++;
+    if(delta < RestTime)numC++;
   }
   else 
   {
-    if(delta > 4000) {
-      if(delta > 30000) lcd.setBacklight(LOW);
+    if(delta > RestTime) {
+      if(delta > SleepTime) lcd.setBacklight(LOW);
       else lcd.setBacklight(HIGH);
       
       vel = 0;
