@@ -1,10 +1,7 @@
 # arduino-speedometer
+### Bike computer based on arduino and Hall Sensor
+
 <br>
-<p align="center">
-  <h3>
-    Bike computer based on arduino and Hall Sensor
-  </h3>
-</p>
 
 
 <p align="center">
