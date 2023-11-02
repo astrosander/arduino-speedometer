@@ -9,8 +9,8 @@ void SpeedometerTick(){
     if(delta < 70) return;
 
     float PrevVel = vel;
+    float Acceleration = (vel - PrevVel) / delta * 1000;
     vel = len / (delta) * 1000;
-    float Acceleration = (vel - PrevVel) * delta / 1000;
     f = 1;
 
     if((PrevVel < 0.3 && vel > 4) || Acceleration > 80) {vel = 0; return;}
@@ -19,7 +19,7 @@ void SpeedometerTick(){
     MaxAcceleration = max(MaxAcceleration, Acceleration);
     num++;
 
-    if(delta < RestTime) numC++;
+    if(delta < RestTime)numC++;
   }
   else 
   {
@@ -47,29 +47,12 @@ String CheckSpeed(float str){
   else return FToStr(str*3.6) + " km/h     ";
 }
 
-String TimeFormat(unsigned long Time, bool ModeF){
+String TimeFormat(unsigned long Time){
     int seconds = (Time / 1000) % 60;
     int minutes = (Time / 60000) % 60;
     int hours = Time / 3600000;
 
     String ans = "";
-
-    if(!ModeF)
-    {
-      if(hours){
-        if (hours < 10) ans += "0";
-        ans += String(hours) + ":";
-        if (minutes < 10) ans += "0";
-        ans += String(minutes);        
-      }
-      else{
-        if (minutes < 10) ans += "0";
-        ans += String(minutes) + ":";
-        if (seconds < 10) ans += "0";
-        ans+=String(seconds);        
-      }
-      return ans;
-    }
     
     if (hours < 10) ans += "0";
     ans += String(hours) + ":";
