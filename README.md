@@ -11,8 +11,8 @@
 <br>
 
 <p align="center">
-  <img src="https://github.com/astrosander/arduino-speedometer/assets/69795340/a9657b23-d64f-49dd-ab93-123992ca5eed" width="600"/><br>
-  Wiring diagram of my project
+  <img src="Media/sheme.png" width="600"/><br>
+  Wiring diagram of the project
 </p>
 <br>
 
