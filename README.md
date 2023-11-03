@@ -19,7 +19,7 @@
 
 <p align="center">
   <img src="https://github.com/astrosander/arduino-speedometer/assets/69795340/3144cc90-7e9d-4b5f-9e38-0c8ade024679" width="600"/><br>
-  Value of the Hall sensor when the magnet passes by it
+  Value of the Analog Hall sensor KY-035 when the magnet passes by it
 </p>
 <br>
 
