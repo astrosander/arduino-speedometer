@@ -1,5 +1,5 @@
 /* Velocomputer based on Arduino and Hall Sensor
- * Сomponents: Digital Hall Sensor & Magnet, Arduino UNO/Nano, button, LCD display I2C 16x02
+ * Сomponents: Analog Hall Sensor & Magnet, Arduino UNO/Nano, button, LCD display I2C 16x02
  * Home page: https://github.com/astrosander/arduino-speedometer
  * Made with 💖 by astrosander
  */
