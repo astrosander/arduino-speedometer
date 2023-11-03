@@ -25,7 +25,7 @@
 
 <p align="center">
   <img src="https://github.com/astrosander/arduino-speedometer/assets/69795340/500bfbef-90af-41b8-a85f-a1c2999036f9" width="600"/><br>
-  Showing values at night. 
+  Showing values at night on LCD display 16x02
 </p>
 <br>
 
