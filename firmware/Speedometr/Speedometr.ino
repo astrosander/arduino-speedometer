@@ -20,7 +20,7 @@ const float len = 2.125; //length of the wheel
 EncButton<EB_TICK, ButPin> enc; 
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
-GTimer_ms myTimer(1000);
+GTimer_ms myTimer(500);
 GTimer_ms BackUp((long)3*3750);
 GTimer_ms OneMinPlot((long)1*3750);
 GTimer_ms FifteenMinPlot((long)15*3750);

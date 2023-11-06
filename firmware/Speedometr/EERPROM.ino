@@ -1,6 +1,6 @@
 void EEPROMInit(){
   EEPROM.get(0, data);
-  if(data.num < 4294967290){//for first time
+  if(data.num < 4294967290){ //for first time
     num =  data.num;
     numC = data.numC;
     TimeDur = data.TimeDur;
