@@ -6,7 +6,7 @@
  
 #define NumMode 8 //number of modes
 #define ButPin 13 //pin of the Button
-#define CalibrationDelta 5 //independs on the location of magnet relatively to Hall Sensor 
+#define CalibrationDelta 4 //independs on the location of magnet relatively to Hall Sensor 
 #define RestTime 4000 //the time after which the bicycle is considered to have stopped (in milliseconds)
 #define SleepTime 30000 //time after which the backlight switches off (in milliseconds)
 const float len = 2.125; //length of the wheel
@@ -29,7 +29,7 @@ bool SpeedFormat, f;
 byte mode = 0;
 int Secondly[16], OneMin[16], ThreeMin[16], FifteenMin[16], mean;
 unsigned long num, numC, TimeDur, lastturn, delta=0;
-float vel, MaxSpeed, MaxAcceleration;
+float vel, Acceleration, MaxSpeed, MaxAcceleration;
 
 struct Data {
   unsigned long num = 0;

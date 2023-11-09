@@ -10,13 +10,11 @@ void SpeedometerTick(){
 
     float PrevVel = vel;
     vel = len / (delta) * 1000;
-    float Acceleration = (vel - PrevVel) * delta / 1000;
+    Acceleration = (vel - PrevVel) / delta * 1000;
     f = 1;
 
     if((PrevVel < 0.3 && vel > 4) || Acceleration > 80) {vel = 0; return;}
     
-    MaxSpeed = max(MaxSpeed, vel);
-    MaxAcceleration = max(MaxAcceleration, Acceleration);
     num++;
 
     if(delta < RestTime) numC++;
@@ -28,6 +26,7 @@ void SpeedometerTick(){
       else lcd.setBacklight(HIGH);
       
       vel = 0;
+      lastturn = millis();
     }
     f=0;  
   }

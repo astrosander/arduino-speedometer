@@ -1,6 +1,8 @@
 void DrawDisplay(){  
   float dist = num*len;
   RefreshPloat(Secondly); 
+  MaxSpeed = max(MaxSpeed, vel);
+  MaxAcceleration = max(MaxAcceleration, Acceleration);  
   
   if(mode == 0){
     long AllWay = dist;
