@@ -6,14 +6,14 @@ void SpeedometerTick(){
     lastturn = millis();
     
     if(f) return;
-    if(delta < 70) return;
+    if(delta < 70) return; //For stability 
 
     float PrevVel = vel;
     vel = len / (delta) * 1000;
     Acceleration = (vel - PrevVel) / delta * 1000;
     f = 1;
 
-    if(abs(Acceleration) > 45) {vel = PrevVel; return;}
+    if(abs(Acceleration) > 45) {vel = PrevVel; return;} //Unless you're an astronaut
     
     num++;
 
@@ -22,17 +22,15 @@ void SpeedometerTick(){
   else 
   {
     if(delta > RestTime) {//it's time to sleep
-//      ChangeBright;
       lcd.setBacklight((delta <= SleepTime) ? HIGH: LOW);
       
       vel = 0;
     }
     else lcd.setBacklight(HIGH);
     f=0;  
-    
   }
 }
-//
+
 //void ChangeBright(bool Status){
 //  if(Status) lcd.setBacklight(HIGH);
 //  else{
