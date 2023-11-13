@@ -23,7 +23,7 @@ void DrawDisplay(){
     lcd.setCursor(0,1);
     lcd.print(CheckSpeed(vel));
 
-   Serial.println(CheckSpeed(vel));
+//   Serial.println(CheckSpeed(vel));
   }
   else if(mode == 1) drawPlot(0, 1, 16, 2, (int*)Secondly);
   

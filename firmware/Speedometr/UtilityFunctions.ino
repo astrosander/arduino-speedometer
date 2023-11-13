@@ -1,7 +1,7 @@
 void SpeedometerTick(){
-  int val = abs(mean-analogRead(A0));
+  int val = analogRead(A0);
   
-  if(val >= CalibrationDelta){
+  if(val >= CalibrationValue){
     lcd.setBacklight(HIGH);
     lastturn = millis();
     
@@ -13,7 +13,7 @@ void SpeedometerTick(){
     Acceleration = (vel - PrevVel) / delta * 1000;
     f = 1;
 
-    if((PrevVel < 0.3 && vel > 4) || Acceleration > 80) {vel = 0; return;}
+    if(abs(Acceleration) > 45) {vel = PrevVel; return;}
     
     num++;
 
@@ -21,16 +21,25 @@ void SpeedometerTick(){
   }
   else 
   {
-    if(delta > RestTime) {
-      if(delta > SleepTime) lcd.setBacklight(LOW);
-      else lcd.setBacklight(HIGH);
+    if(delta > RestTime) {//it's time to sleep
+//      ChangeBright;
+      lcd.setBacklight((delta <= SleepTime) ? HIGH: LOW);
       
       vel = 0;
-      lastturn = millis();
     }
+    else lcd.setBacklight(HIGH);
     f=0;  
+    
   }
 }
+//
+//void ChangeBright(bool Status){
+//  if(Status) lcd.setBacklight(HIGH);
+//  else{
+//    
+//  }
+//  lcd.setBacklight(Status ? HIGH: LOW);
+//}
 
 String FToStr(float num){
   char bufferi[10];

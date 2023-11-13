@@ -6,7 +6,7 @@ void ButtonTick(){
   if (enc.held()) {lcd.clear();mode = 0;}
   
   if(!enc.hasClicks()) return;
-  int clickCount = enc.clicks;
+
   lastturn = millis();
   lcd.setBacklight(HIGH);
   if(delta > SleepTime) return;
