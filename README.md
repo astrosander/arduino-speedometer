@@ -1,14 +1,31 @@
 # arduino-speedometer
-### Bike computer based on arduino and Hall Sensor
-## Video demonstration is available on <a href="https://www.youtube.com/watch?v=YXrm5EtTACU">YouTube</a>
-<br>
 
+<p align="center">
+  <br>
+  <img src="https://github.com/astrosander/arduino-speedometer/assets/69795340/5e7e7e49-91c6-4f1c-a0e9-743648dda41e" width="180"/><br><br>
+ <b>Bike computer based on arduino and Hall Sensor</b><br><br><br>
+</p>
+
+
+## Demonstration
 
 <p align="center">
   <img src="Media/Animation.gif" width="600"/><br>
   3D animation of a bicycle with hardware on it
 </p>
 <br>
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=YXrm5EtTACU">
+    <img src="https://github.com/astrosander/arduino-speedometer/assets/69795340/ad46ccec-5cd7-4434-88f0-c49fbe1b3a76" width="600"/><br>
+  </a>
+  Video demonstration is available on <a href="https://www.youtube.com/watch?v=YXrm5EtTACU">YouTube</a>
+  
+</p>
+<br>
+
+
+## How it works?
 
 <p align="center">
   <img src="Media/sheme.png" width="600"/><br>
@@ -23,6 +40,8 @@
 </p>
 <br>
 
+
+## Compacting..
 <p align="center">
   <img src="https://github.com/astrosander/arduino-speedometer/assets/69795340/500bfbef-90af-41b8-a85f-a1c2999036f9" width="600"/><br>
   Showing values at night on LCD display 16x02
