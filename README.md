@@ -1,6 +1,6 @@
 # arduino-speedometer
 ### Bike computer based on arduino and Hall Sensor
-
+## Video demonstration is available on <a href="https://www.youtube.com/watch?v=YXrm5EtTACU">YouTube</a>
 <br>
 
 
