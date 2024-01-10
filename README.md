@@ -15,15 +15,6 @@
 </p>
 <br>
 
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=YXrm5EtTACU">
-    <img src="https://github.com/astrosander/arduino-speedometer/assets/69795340/a1e3d150-53d2-4170-bbaf-dfcf8747df66" width="600"/><br>
-  </a>
-  Video demonstration is available on <a href="https://www.youtube.com/watch?v=YXrm5EtTACU">YouTube</a>
-</p>
-<br>
-
-
 ## How it works?
 
 <p align="center">
